@@ -15,34 +15,38 @@ type DefaultResponse struct {
 	Success bool   `json:"success"`
 }
 
-var database Database
-
 func Register(responseWriter http.ResponseWriter, request *http.Request) {
-	var user User
-	err := json.NewDecoder(request.Body).Decode(&user)
-
-	if err != nil {
-		respondWithError(responseWriter, "Error while registering.", http.StatusBadRequest)
+	userRepository := newUserRepository()
+	if request.Method == http.MethodPost {
+		var user User
+		err := json.NewDecoder(request.Body).Decode(&user)
+		if err != nil {
+			respondWithError(responseWriter, err.Error(), http.StatusBadRequest)
+			return
+		}
+		err, _ = userRepository.Register(user)
+		if err != nil {
+			respondWithError(responseWriter, err.Error(), http.StatusBadRequest)
+			return
+		}
+		respondWithSuccess(responseWriter, "Registered.", http.StatusCreated)
 	}
-
-	database.CreateUser(user)
-
-	respondWithSuccess(responseWriter, "Registered.", http.StatusCreated)
 }
 
 func Login(responseWriter http.ResponseWriter, request *http.Request) {
+	userRepository := newUserRepository()
 	if request.Method == http.MethodPost {
 		var loginRequest LoginRequest
-
 		err := json.NewDecoder(request.Body).Decode(&loginRequest)
-
 		if err != nil {
 			http.Error(responseWriter, err.Error(), http.StatusBadRequest)
 			return
 		}
-
-		loginRequest.Password = hashPassword(loginRequest.Password)
-		respondWithJson(responseWriter, loginRequest, http.StatusOK)
+		if ok := userRepository.Login(loginRequest.Username, loginRequest.Password); !ok {
+			respondWithError(responseWriter, "Wrong Credentials.", http.StatusUnauthorized)
+			return
+		}
+		respondWithSuccess(responseWriter, "Logged.", http.StatusOK)
 	}
 }
 

@@ -1,7 +1,9 @@
 package main
 
-var server Server
-var routes Routes
+var (
+	server Server
+	routes Routes
+)
 
 func main() {
 	routes.Register()
