@@ -10,18 +10,21 @@ import (
 )
 
 type Repository struct {
-	client *mongo.Client
-	db     *mongo.Database
-	ctx    context.Context
+	client   *mongo.Client
+	db       *mongo.Database
+	ctx      context.Context
+	settings Settings
 }
 
-const (
-	defaultDb = "Auth"
-	url       = "mongodb+srv://victor:Senha123#@cluster0.lnn4l.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-)
+const defaultDb = "Auth"
 
 func newRepository() *Repository {
-	client, err := mongo.NewClient(options.Client().ApplyURI(url))
+	repository := &Repository{}
+	settings, err := newSettings()
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	client, err := mongo.NewClient(options.Client().ApplyURI(settings.ConnectionString))
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -30,8 +33,7 @@ func newRepository() *Repository {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	return &Repository{
-		client: client,
-		db:     client.Database(defaultDb),
-	}
+	repository.client = client
+	repository.db = client.Database(defaultDb)
+	return repository
 }

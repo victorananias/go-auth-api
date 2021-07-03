@@ -1,0 +1,3 @@
+{
+  "ConnectionString": "mongodb://root:pass123@localhost:8081"
+}
