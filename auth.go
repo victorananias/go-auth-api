@@ -64,5 +64,9 @@ func respondWithJson(responseWriter http.ResponseWriter, i interface{}, status i
 	responseWriter.Header().Set("Content-Type", "application/json")
 	jsonResponse, _ := json.Marshal(i)
 	responseWriter.WriteHeader(status)
-	responseWriter.Write(jsonResponse)
+	_, err := responseWriter.Write(jsonResponse)
+	if err != nil {
+		http.Error(responseWriter, err.Error(), http.StatusBadRequest)
+
+	}
 }
