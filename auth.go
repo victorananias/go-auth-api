@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -18,6 +19,7 @@ type DefaultResponse struct {
 func Register(responseWriter http.ResponseWriter, request *http.Request) {
 	userRepository := newUserRepository()
 	if request.Method == http.MethodPost {
+		log.Println("Register request called.")
 		var user User
 		err := json.NewDecoder(request.Body).Decode(&user)
 		if err != nil {
@@ -36,6 +38,7 @@ func Register(responseWriter http.ResponseWriter, request *http.Request) {
 func Login(responseWriter http.ResponseWriter, request *http.Request) {
 	userRepository := newUserRepository()
 	if request.Method == http.MethodPost {
+		log.Println("Login request called.")
 		var loginRequest LoginRequest
 		err := json.NewDecoder(request.Body).Decode(&loginRequest)
 		if err != nil {
