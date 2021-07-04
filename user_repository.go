@@ -36,7 +36,7 @@ func (repository *UserRepository) Register(user User) (err error, insertedID str
 	user.CreatedAt = time.Now().Format("YYYY-MM-DD hh:mm:ss")
 	findResult := repository.collection().FindOne(repository.ctx, bson.D{{"username", user.Username}})
 	if err := findResult.Err(); err == nil {
-		return errors.New("username already registered"), ""
+		return errors.New("username already in use"), ""
 	}
 	insertResult, err := repository.collection().InsertOne(repository.ctx, user)
 	if err != nil {
