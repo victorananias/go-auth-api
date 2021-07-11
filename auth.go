@@ -37,6 +37,7 @@ func Register(responseWriter http.ResponseWriter, request *http.Request) {
 
 func Login(responseWriter http.ResponseWriter, request *http.Request) {
 	userRepository := newUserRepository()
+	var jwtCreator JwtCreator
 	if request.Method == http.MethodPost {
 		log.Println("Login request called.")
 		var loginRequest LoginRequest
@@ -45,11 +46,13 @@ func Login(responseWriter http.ResponseWriter, request *http.Request) {
 			http.Error(responseWriter, err.Error(), http.StatusBadRequest)
 			return
 		}
-		if ok := userRepository.Login(loginRequest.Username, loginRequest.Password); !ok {
-			respondWithError(responseWriter, "Wrong Credentials.", http.StatusUnauthorized)
+		ok, user := userRepository.Login(loginRequest.Username, loginRequest.Password)
+		if ok {
+			respondWithError(responseWriter, "wrong Credentials", http.StatusUnauthorized)
 			return
 		}
-		respondWithSuccess(responseWriter, "Logged.", http.StatusOK)
+		jwt := jwtCreator.CreateFromUser(user)
+		respondWithJson(responseWriter, jwt, http.StatusOK)
 	}
 }
 

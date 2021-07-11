@@ -45,17 +45,20 @@ func (repository *UserRepository) Register(user User) (err error, insertedID str
 	return nil, insertResult.InsertedID.(primitive.ObjectID).String()
 }
 
-func (repository *UserRepository) Login(username, password string) bool {
+func (repository *UserRepository) Login(username, password string) (bool, User) {
 	where := bson.D{{"username", username}}
 	var user User
 	result := repository.collection().FindOne(repository.ctx, where)
 	if err := result.Err(); err != nil {
-		return false
+		return false, User{}
 	}
 	if err := result.Decode(&user); err != nil {
-		return false
+		return false, User{}
 	}
-	return compareHashAndPassword(user.Password, password)
+	if !compareHashAndPassword(user.Password, password) {
+		return false, User{}
+	}
+	return true, user
 }
 
 func (repository *UserRepository) collection() *mongo.Collection {

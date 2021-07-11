@@ -1,3 +1,4 @@
 {
-  "ConnectionString": "mongodb://root:pass123@localhost:27017/admin"
+  "ConnectionString": "mongodb://root:pass123@localhost:27017/admin",
+  "JwtSecret": "this is my jwt key"
 }
