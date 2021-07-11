@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="go build github.com/victorananias/go-auth-api" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+    <module name="go-auth-api" />
+    <target name="WSL - Ubuntu" />
+    <working_directory value="$PROJECT_DIR$" />
+    <go_parameters value="-i" />
+    <kind value="DIRECTORY" />
+    <package value="github.com/victorananias/go-auth-api" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <option name="build_on_remote_target" value="true" />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="run mongodb" run_configuration_type="docker-deploy" />
+    </method>
+  </configuration>
+</component>

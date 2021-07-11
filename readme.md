@@ -1,1 +1,9 @@
-go mod init
+# Auth API
+
+
+## Run
+
+### Via docker
+```shell
+$ docker-compose up
+```
