@@ -51,9 +51,9 @@ func List(responseWriter http.ResponseWriter, request *http.Request) {
 }
 
 func Login(responseWriter http.ResponseWriter, request *http.Request) {
-	// if request.Method != http.MethodPost {
-	// 	return
-	// }
+	if request.Method != http.MethodPost {
+		return
+	}
 	log.Println("Login request called.")
 	userRepository := newUserRepository()
 	var loginRequest LoginRequest
