@@ -4,17 +4,10 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/victorananias/go-auth-api/requests"
+	"github.com/victorananias/go-auth-api/responses"
 )
-
-type LoginRequest struct {
-	Username string
-	Password string
-}
-
-type DefaultResponse struct {
-	Message string `json:"message"`
-	Success bool   `json:"success"`
-}
 
 func Register(responseWriter http.ResponseWriter, request *http.Request) {
 	if request.Method != http.MethodPost {
@@ -56,7 +49,7 @@ func Login(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 	log.Println("Login request called.")
 	userRepository := newUserRepository()
-	var loginRequest LoginRequest
+	var loginRequest requests.LoginRequest
 	err := json.NewDecoder(request.Body).Decode(&loginRequest)
 	if err != nil {
 		http.Error(responseWriter, err.Error(), http.StatusBadRequest)
@@ -66,27 +59,26 @@ func Login(responseWriter http.ResponseWriter, request *http.Request) {
 		respondWithError(responseWriter, "Wrong Credentials.", http.StatusUnauthorized)
 		return
 	}
-	respondWithSuccess(responseWriter, "Logged.", http.StatusOK)
+	jwt := Jwt{}
+	token := jwt.build(loginRequest.Username)
+	respondWithJson(responseWriter, responses.LoginResponse{Token: token}, http.StatusOK)
 }
 
 func respondWithError(responseWriter http.ResponseWriter, message string, status int) {
-	response := DefaultResponse{Message: message, Success: false}
+	response := responses.DefaultResponse{Message: message, Success: false}
 	respondWithJson(responseWriter, response, status)
 }
 
 func respondWithSuccess(responseWriter http.ResponseWriter, message string, status int) {
-	response := DefaultResponse{Message: message, Success: true}
+	response := responses.DefaultResponse{Message: message, Success: true}
 	respondWithJson(responseWriter, response, status)
 }
 
 func respondWithJson(responseWriter http.ResponseWriter, i interface{}, status int) {
-	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.Header().Set("Access-Control-Allow-Origin", "*")
-	responseWriter.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	jsonResponse, _ := json.Marshal(i)
-	responseWriter.WriteHeader(status)
-	_, err := responseWriter.Write(jsonResponse)
+	(responseWriter).WriteHeader(status)
+	_, err := (responseWriter).Write(jsonResponse)
 	if err != nil {
-		http.Error(responseWriter, err.Error(), http.StatusBadRequest)
+		http.Error((responseWriter), err.Error(), http.StatusBadRequest)
 	}
 }

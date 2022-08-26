@@ -21,10 +21,11 @@ const defaultDb = "Auth"
 func newRepository() *Repository {
 	repository := &Repository{}
 	settings, err := newSettings()
+
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	client, err := mongo.NewClient(options.Client().ApplyURI(settings.ConnectionString))
+	client, err := mongo.NewClient(options.Client().ApplyURI(settings.Db.ConnectionString))
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -35,5 +36,6 @@ func newRepository() *Repository {
 	}
 	repository.client = client
 	repository.db = client.Database(defaultDb)
+	repository.settings = *settings
 	return repository
 }

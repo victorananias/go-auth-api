@@ -1,3 +1,8 @@
 {
-  "ConnectionString": "mongodb://docker:mongopw@localhost:27017"
+    "Db": {
+        "ConnectionString": "mongodb://root:123password@localhost:27017"
+    },
+    "Jwt": {
+        "Secret": "jwt-secret"
+    }
 }

@@ -6,6 +6,15 @@ import (
 )
 
 type Settings struct {
+	Db  DbSettings
+	Jwt JwtSettings
+}
+
+type JwtSettings struct {
+	Secret string
+}
+
+type DbSettings struct {
 	ConnectionString string
 }
 
