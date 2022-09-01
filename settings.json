@@ -1,6 +1,7 @@
 {
     "Db": {
-        "ConnectionString": "mongodb://root:123password@localhost:27017"
+        "ConnectionString": "mongodb://root:123password@localhost:27017",
+        "DbName": "Auth"
     },
     "Jwt": {
         "Secret": "jwt-secret"

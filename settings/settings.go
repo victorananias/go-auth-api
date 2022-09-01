@@ -1,4 +1,4 @@
-package main
+package settings
 
 import (
 	"encoding/json"
@@ -16,11 +16,12 @@ type JwtSettings struct {
 
 type DbSettings struct {
 	ConnectionString string
+	DbName           string
 }
 
 const settingsName = "settings.json"
 
-func newSettings() (*Settings, error) {
+func NewSettings() (*Settings, error) {
 	bytes, err := os.ReadFile(settingsName)
 	if err != nil {
 		return nil, err
